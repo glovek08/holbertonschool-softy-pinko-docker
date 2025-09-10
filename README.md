@@ -16,8 +16,39 @@ Containerized app infrastructure with Docker – reverse proxy, load balancer (R
 
 ## Context
 
-Docker is a platform that allows you to containerize your applications, meaning that you can package them into portable, self-contained environments which can run anywhere. This means that you can quickly move your application from one environment to another, such as from your local computer to a server, without worrying about dependencies or configuration issues. Docker achieves this by using containers, which are isolated environments that contain everything an application needs to run, such as libraries, dependencies, and configurations. Docker containers are lightweight and can be started and stopped quickly, making them ideal for modern software development and deployment. With Docker, you can also quickly scale your application by running multiple containers of the same application on different hosts (or the same host, as we will do in this project), and manage them using Docker Compose or other orchestration tools.
+Docker is a tool that packages applications and all their necessary components (like libraries and configurations) into isolated environments called containers. This makes applications portable, allowing them to run consistently on any machine, from a developer's laptop to a production server.
 
-Ultimately, what you will create in this project is an infrastructure for an application that utilizes a reverse proxy, a load balancer, two application servers, and one front-end server.
+The main benefits of using Docker are that its containers are lightweight, fast, and simplify the process of deploying and scaling applications. For the project described, <strong>you will use Docker to build a complete application infrastructure, including a reverse proxy, a load balancer, and multiple servers.</strong>
 
 <img src="./assets/fat_guy_diagram.png" alt="Network Load Share">
+<i>*Each colored line is a different request/response. Also, Imagine theres a cloud between the user and the reverse proxy, a forward proxy can sit between the client and the cloud.</i>
+
+
+## Some useful docker commands
+
+<i> *When installing packages through the Dockerfile, what's the `-y` apt-get flag you might ask.
+It automatically answers `yes` to all prompts during installation.
+
+### Build image
+
+This will look for a `Dockerfile` so make sure your cwd contains one.
+```bash
+$ docker build -t <your-docker-image> .
+```
+
+  * `docker build`: This is the command to build an image from a Dockerfile.
+
+  * `-t <your-docker-image>`: The -t flag is used to tag the image with a name. I've used my-ubuntu-image as an example, but you can choose any name you like.
+
+  * `.`: The dot at the end of the command specifies that the build context is the current directory (where your Dockerfile is located).
+
+### Run the container
+
+One the image is fully built, use this command to run the container.
+```bash
+$ docker run <your-docker-image>
+```
+  * `docker run`: Creates and starts the new container.
+
+  * `<your-docker-image>`: The name of the image to run.
+
