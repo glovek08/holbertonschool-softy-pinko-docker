@@ -115,5 +115,45 @@ RUN pip3 install -r requirements.txt
 ```
 <i>*Remember to add `flask_cors` as a dependency.</i>
 
+### Now you can run build and run both containers
+* ### Back-end service
+  <strong>Terminal 1</strong>
+  #### Build the image:
+  ```bash
+  # Place your cwd at task3/
+  # Build the Back-end Image
+  ~/holbertonschool-softy-pinko-docker/task3$: sudo docker build -f ./back-end/Dockerfile -t softy-pinko-back-end:task3 ./back-end
+  # ... Docker building...
+  => => naming to docker.io/library/softy-pinko-back-end:task3
+  # Docker finishes...
+  ~/holbertonschool-softy-pinko-docker/task3$:
+  ```
+  <i>*Note that I'm using `sudo`</i>
+  #### Now run the container:
+  ```bash
+  ~/holbertonschool-softy-pinko-docker/task3$: sudo docker run -p 5252:5252 -it --rm --name softy-pinko-back-end-task3 softy-pinko-back-end:task3
+  # Now the Back-end container is running on port 5252.
+  * Serving Flask app 'api'
+  * Debug mode: off
+  WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+  * Running on all addresses (0.0.0.0)
+  * Running on http://127.0.0.1:5252
+  * Running on http://172.17.0.2:5252
+      Press CTRL+C to quit
+  ```
+  <i>If you want to keep the containers after shutting them down, remove the `--rm` flag.</i>
+* ### Front-end service
+  <strong>Terminal 2</strong>
+  #### Build the image:
+  ```bash
+  ~/holbertonschool-softy-pinko-docker/task3$ sudo docker build -f ./front-end/Dockerfile -t softy-pinko-front-end:task3 ./front-end
+  ```
+  #### Run the container:
+  ```bash
+  ~/holbertonschool-softy-pinko-docker/task3$ docker run -p 9000:9000 -it --rm --name softy-pinko-front-end-task3 softy-pinko-front-end:task3
+  # The front end is served on port 9000 so head to localhost:9000 to see the site.
+  ```
+
+
 ### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
 
