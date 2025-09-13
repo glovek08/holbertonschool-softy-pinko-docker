@@ -206,5 +206,8 @@ RUN pip3 install -r requirements.txt
   $ sudo docker exec -it softy-pinko-front-end /bin/bash
   ```
 
+  ### This setup looks like this:
+  <img src="assets/task4_docker_diagram.png" alt="Docker compose diagram">
+
 ### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
 
