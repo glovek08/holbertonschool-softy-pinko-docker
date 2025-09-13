@@ -13,7 +13,11 @@ Containerized app infrastructure with Docker – reverse proxy, load balancer (R
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-25.04-e95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 
 
-If you get this warning:
+
+<img src="assets/softy-pinko-landing-page.png">
+
+
+### If you get this warning:
 
 `- JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 6)`
 
@@ -30,6 +34,7 @@ CMD ["echo", "Hello, World!"]
 2) [Docker commands](#some-useful-docker-commands)
     * [Build image](#build-image)
     * [Run container](#run-the-container)
+    * [Task 3 Notes](#task-3-notes)
 
 ## Resources
 
@@ -101,4 +106,14 @@ $ docker run <your-docker-image>
   * `--rm`: Removes the container when it finishes loading up everything.
   * `--name`: If not specified, docker will give your container a random name like `sexy-lumberjack`
 
-### <p align=center>[Back to Top](#holbertonschool---softy-pinko-docker)</p>
+### Task 3 Notes:
+
+You should specify the requirements.txt for the python dependencies, specifically for `flask_cors`, create your `requirements.txt` and add this to your back-end `Dockerfile`:
+```dockerfile
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+```
+<i>*Remember to add `flask_cors` as a dependency.</i>
+
+### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
+
