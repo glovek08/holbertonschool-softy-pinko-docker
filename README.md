@@ -36,6 +36,8 @@ CMD ["echo", "Hello, World!"]
     * [Run container](#run-the-container)
     * [Task 3 Notes](#task-3-notes)
     * [Task 4 Notes](#task-4-notes)
+    * [Task 5 Notes](#task-5-notes)
+    * [Task 6 Notes](#task-6-notes)
 
 ## Resources
 
@@ -195,6 +197,14 @@ RUN pip3 install -r requirements.txt
   ✔ Container softy-pinko-front-end Created   0.4s
   Attaching to softy-pinko-back-end, softy-pinko-front-end
   ```
+  #### More flags:
+  * `up`: Starts the services in the foreground and shows the logs, it's short for every container up and running.
+  * `up -d`: Starts the services in detached mode (in the background).
+  * `up --build`: Forces rebuilding of images before starting the containers.
+  * `up --force-recreate`: Recreates containers even if their configuration or images haven’t changed.
+  * `up --scale back-end=2`: This will create a load balancer of size 2.
+
+
   Now it's serving both containers. The front-end container may not show interactive terminal output here, as it typically runs a web server in the background.
 
   You can get a terminal for the front-end container:
@@ -287,6 +297,13 @@ RUN pip3 install -r requirements.txt
   ```bash
   $ sudo docker ps -a
   ```
+  * Stop containers:
+  ```bash
+  # All containers
+  $ sudo docker stop $(docker ps -q)
+  # Specify name
+  $ sudo docker stop <container_name>
+  ```
   * Remove the conflicting container (using its hash or name):
   ```bash
   $ sudo docker rm <container-name/hash>
@@ -300,7 +317,41 @@ RUN pip3 install -r requirements.txt
   You can also use `docker-compose down` to auto-remove old containers
 
 
+### Task 6 Notes
+  #### Scaling back-end service with Docker Compose
 
+  Run the scaled back-end load balancer with:
+  ```bash
+  $ sudo docker-compose up --scale back-end=2
+  ```
+  You should see this when successful:
+  ```bash
+  [+] Running 5/5
+  ✔ Network task6_default            Created     0.0s 
+  ✔ Container task6-back-end-2       Created     0.0s 
+  ✔ Container task6-back-end-1       Created     0.0s 
+  ✔ Container softy-pinko-front-end  Created     0.0s 
+  ✔ Container softy-pinko-proxy      Created     0.0s 
+  Attaching to softy-pinko-front-end, softy-pinko-proxy, back-end-1, back-end-2
+  back-end-2             |  * Serving Flask app 'api'
+  back-end-2             |  * Debug mode: off
+  back-end-2             | WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+  back-end-2             |  * Running on all addresses (0.0.0.0)
+  back-end-2             |  * Running on http://127.0.0.1:5252
+  back-end-2             |  * Running on http://172.20.0.2:5252
+  back-end-2             | Press CTRL+C to quit
+  back-end-1             |  * Serving Flask app 'api'
+  back-end-1             |  * Debug mode: off
+  back-end-1             | WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+  back-end-1             |  * Running on all addresses (0.0.0.0)
+  back-end-1             |  * Running on http://127.0.0.1:5252
+  back-end-1             |  * Running on http://172.20.0.3:5252
+  back-end-1             | Press CTRL+C to quit
+  ```
+  #### Shutdown the docker-compose setup and remove everything:
+  ```bash
+  $ sudo docker-compose down
+  ```
 
 
 
