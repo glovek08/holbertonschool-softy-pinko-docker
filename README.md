@@ -209,5 +209,99 @@ RUN pip3 install -r requirements.txt
   ### This setup looks like this:
   <img src="assets/task4_docker_diagram.png" alt="Docker compose diagram">
 
-### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
+### Task 5 Notes
 
+* #### Setup the NGINX Dockerfile
+  ```dockerfile
+  FROM nginx:latest
+
+  COPY proxy.conf /etc/nginx/conf.d/default.conf
+  ```
+* #### Configure the server to forward:
+  * `/`: requests to the `front-end` container.
+  * `/api` requests to the `back-end` container.
+  ```nginx
+  server {
+    listen 80;
+    location / {
+        proxy_pass http://front-end:9000;
+    }
+    location /api/ {
+        proxy_pass http://back-end:5252/;
+    }
+  }
+  ```
+  ### Some notes:
+  * Trailing slashes should be used for the `/api/` endpoint, without a trailing slash Nginx might throw up.
+  * Pass `Host` and `Headers` back to the `back-end`, this is important for authentication stuff, rate limiting, logging:
+    ```nginx
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    ```
+    #### Where:
+      * `Host $host`: Used by web apps to determines which site or virtual host is being accessed, It ensures the back-end receives the original doman requested by the client.
+      * `X-Real-IP` and `X-Forwarded-For`: Pass the original client's IP address to the back-end, Without them, the back-end gets the proxy's IP, its usage depends on what you want to achieve.
+      * `X-Forwarded-Proto`: This tells the back-end if the original request was <strong>HTTP</strong> or <strong>HTTPS</strong>.
+* #### Update `docker-compose`:
+  ```yml
+  services:
+    back-end:
+      build:
+        context: ./back-end
+        dockerfile: Dockerfile
+      container_name: softy-pinko-back-end
+      expose:
+        - "5252"
+
+    front-end:
+      build:
+        context: ./front-end
+        dockerfile: Dockerfile
+      container_name: softy-pinko-front-end
+      expose:
+        - "9000"
+      depends_on:
+        - back-end
+
+    proxy:
+      build:
+        context: ./proxy
+        dockerfile: Dockerfile
+      image: proxy
+      container_name: softy-pinko-proxy
+      ports:
+        - "80:80"
+      depends_on:
+        - front-end
+        - back-end
+  ```
+  Now `front-end` and `back-end` services are forwarded to the `proxy` service, the `proxy` service is mapped to port 80:80 and all incoming request go through `proxy`
+
+  Before building make sure to delete the other containers otherwise you'll get this error:
+  ```bash
+  Error response from daemon: Conflict. The container name <container-name> is already in use by container <container-hash>. You have to remove (or rename) that container to be able to reuse that name.
+  ```
+  * List all containers:
+  ```bash
+  $ sudo docker ps -a
+  ```
+  * Remove the conflicting container (using its hash or name):
+  ```bash
+  $ sudo docker rm <container-name/hash>
+  ```
+* #### Now build the `docker-compose`
+  ```bash
+  ~/holbertonschool-softy-pinko-docker/task5$: docker-compose up --build
+  ```
+
+  #### <i>Tip:</i>
+  You can also use `docker-compose down` to auto-remove old containers
+
+
+
+
+
+
+### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
