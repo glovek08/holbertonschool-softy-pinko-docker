@@ -35,6 +35,7 @@ CMD ["echo", "Hello, World!"]
     * [Build image](#build-image)
     * [Run container](#run-the-container)
     * [Task 3 Notes](#task-3-notes)
+    * [Task 4 Notes](#task-4-notes)
 
 ## Resources
 
@@ -153,7 +154,57 @@ RUN pip3 install -r requirements.txt
   ~/holbertonschool-softy-pinko-docker/task3$ docker run -p 9000:9000 -it --rm --name softy-pinko-front-end-task3 softy-pinko-front-end:task3
   # The front end is served on port 9000 so head to localhost:9000 to see the site.
   ```
+### Task 4 Notes
+* ####  Start by installing docker from `Snap`
+  ```bash
+  $ sudo snap install docker
+  # ...
+  docker 28.1.1+1 from Canonical✓ installed
+  ```
+  <i><strong>why not APT?:</strong> the Snap package is officially supported by the Docker team, it's super helpful to isolate your Docker package and also automatically keep it up-to-date.</i><br>
+  <i><strong>Flatpak?</strong>: It's not officially supported. Snap can manage daemons like the Docker Engine, Flatpak is not designed for background services.</i>
+* #### Build your `docker-compose.yml`
+  ```yml
+  # Place your cwd at task4/
+  services:
+    back-end:
+      build:
+        context: ./back-end
+        dockerfile: Dockerfile
+      container_name: softy-pinko-back-end
+      ports:
+        - "5252:5252"
 
+    front-end:
+      build:
+        context: ./front-end
+        dockerfile: Dockerfile
+      container_name: softy-pinko-front-end
+      ports:
+        - "9000:9000"
+  ```
+  <i>*For older Docker versions you must specify `version: "#"` at the start of the file</i>
+* #### Build your `docker-compose.yml`
+  ```bash
+  ~/holbertonschool-softy-pinko-docker/task4$: sudo docker-compose up --build
+  # Docker compose building...
+  ✔ back-end                        Built     0.0s 
+  ✔ front-end                       Built     0.1s
+  ✔ Network task4_default           Created   0.1s
+  ✔ Container softy-pinko-back-end  Created   0.3s
+  ✔ Container softy-pinko-front-end Created   0.4s
+  Attaching to softy-pinko-back-end, softy-pinko-front-end
+  ```
+  Now it's serving both containers. The front-end container may not show interactive terminal output here, as it typically runs a web server in the background.
+
+  You can get a terminal for the front-end container:
+  ```bash
+  $ sudo docker exec -it softy-pinko-front-end /bin/sh
+  ```
+  You can also install `bash` on your Front-end's `Dockerfile` to get a bash terminal and run this to get something prettier than a barebones `sh`:
+    ```bash
+  $ sudo docker exec -it softy-pinko-front-end /bin/bash
+  ```
 
 ### <p align=center>[Back to Top ⬆](#holbertonschool---softy-pinko-docker)</p>
 
